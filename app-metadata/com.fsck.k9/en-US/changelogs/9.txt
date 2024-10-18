@@ -1,0 +1,2 @@
+- Short note for bug fix 1
+- Short note only for this one
