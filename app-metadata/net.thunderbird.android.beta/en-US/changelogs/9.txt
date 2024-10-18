@@ -1,0 +1,3 @@
+Thunderbird for Android version 8.0b1, based on K-9 Mail. Changes include:
+- Short note for bug fix 1
+- Short note only for this one

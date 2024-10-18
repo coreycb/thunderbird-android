@@ -5,6 +5,10 @@
      Locale-specific versions are kept in res/raw-<locale qualifier>/changelog.xml.
 -->
 <changelog>
+    <release version="8.0b1" versioncode="9" date="2024-09-30">
+        <change>Short note for bug fix 1</change>
+        <change>Short note only for this one</change>
+    </release>
     <release version="8.0b3" versioncode="6" date="2024-10-15">
         <change>Support Thunderbird with our new in-app financial contribution feature (work in progress)</change>
         <change>OAuth support now available for Fastmail</change>
