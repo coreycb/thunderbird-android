@@ -36,7 +36,7 @@ jobs:
     outputs:
       releaseEnv: ${{ steps.releaseEnv.outputs.result }}
     steps:
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         id: releaseEnv
         with:
           result-encoding: string
@@ -65,7 +65,7 @@ jobs:
       releaseType: ${{ vars.RELEASE_TYPE }}
     steps:
       - name: Show Environment
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         id: dump
         env:
           matrixInclude: ${{ vars.MATRIX_INCLUDE }}
@@ -160,7 +160,7 @@ jobs:
     steps:
       - name: Triggering Actor Link
         id: actorLink
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         env:
           userMap: ${{ vars.MATRIX_NOTIFY_USER_MAP }}
         with:
@@ -175,7 +175,7 @@ jobs:
 
       - name: Notify Build Start
         if: ${{ vars.MATRIX_NOTIFY_ROOM }}
-        uses: kewisch/action-matrix-notify@v1
+        uses: kewisch/action-matrix-notify@3c45d89acd032c84b955b54c8a9001833ac91d17 # v1
         with:
           matrixHomeserver: ${{ vars.MATRIX_NOTIFY_HOMESERVER }}
           matrixRoomId: ${{ vars.MATRIX_NOTIFY_ROOM }}
@@ -206,7 +206,7 @@ jobs:
     steps:
       - name: Checkout repository
         if: ${{ contains(matrix.releaseTarget, 'github') || needs.dump_config.outputs.releaseType == 'daily' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
 
@@ -215,14 +215,14 @@ jobs:
         shell: bash
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
         if: ${{ contains(matrix.releaseTarget, 'github') || needs.dump_config.outputs.releaseType == 'daily' }}
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@cc4fc85e6b35bafd578d5ffbc76a5518407e1af0 # v4.2.1
         if: ${{ contains(matrix.releaseTarget, 'github') || needs.dump_config.outputs.releaseType == 'daily' }}
         with:
           cache-disabled: "${{ contains(fromJSON('[\"beta\", \"release\"]'), needs.dump_config.outputs.releaseType) }}"
@@ -396,7 +396,7 @@ jobs:
 
       - name: Summary
         if: ${{ contains(matrix.releaseTarget, 'github') || needs.dump_config.outputs.releaseType == 'daily' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         env:
           bump_sha: ${{ steps.commit.outputs.sha }}
           applicationId: ${{ steps.appinfo.outputs.APPLICATION_ID }}
@@ -449,7 +449,7 @@ jobs:
           cat $GITHUB_OUTPUT
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: ${{ steps.sha.outputs.app_sha }}
 
@@ -457,13 +457,13 @@ jobs:
         shell: bash
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@cc4fc85e6b35bafd578d5ffbc76a5518407e1af0 # v4.2.1
         with:
           cache-disabled: "${{ contains(fromJSON('[\"beta\", \"release\"]'), needs.dump_config.outputs.releaseType) }}"
           add-job-summary: on-failure
@@ -546,7 +546,7 @@ jobs:
           ls -l ${UPLOAD_PATH}/
 
       - name: Upload unsigned
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         env:
           UPLOAD_PATH: "uploads"
         with:
@@ -566,7 +566,7 @@ jobs:
     env:
       RELEASE_TYPE: ${{ needs.dump_config.outputs.releaseType }}
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: unsigned-${{ matrix.appName }}-${{ matrix.packageFormat }}-${{ matrix.packageFlavor }}
           path: uploads/
@@ -595,7 +595,7 @@ jobs:
           rm -f uploads/*.jks
 
       - name: Upload signed
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: signed-${{ matrix.appName }}-${{ matrix.packageFormat }}-${{ matrix.packageFlavor }}
           if-no-files-found: error
@@ -610,7 +610,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: notify_matrix
     steps:
-      - uses: kewisch/action-matrix-notify@v1
+      - uses: kewisch/action-matrix-notify@3c45d89acd032c84b955b54c8a9001833ac91d17 # v1
         with:
           matrixHomeserver: ${{ vars.MATRIX_NOTIFY_HOMESERVER }}
           matrixRoomId: ${{ vars.MATRIX_NOTIFY_ROOM }}
@@ -619,24 +619,9 @@ jobs:
             🟡 [${{ needs.dump_config.outputs.releaseType }} build ${{ github.run_number}}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
             waiting for publish approval (triggered by ${{ needs.notify_build_start.outputs.actorLink }})
 
-  pre_publish:
-    # This is a holding job meant to require approval before proceeding with the publishing jobs below
-    # The environment has a deployment protection rule requiring approval from a set of named reviewers
-    # before proceeding.
-    name: Wait for Approval
-    needs: [dump_config, sign_mobile]
-    if: "${{ contains(fromJSON('[\"beta\", \"release\"]'), needs.dump_config.outputs.releaseType) }}"
-    environment: publish_hold
-    runs-on: ubuntu-latest
-    steps:
-      - name: Approval
-        shell: bash
-        run: |
-          true
-
   publish_release:
     name: Publish Release
-    needs: [pre_publish, dump_config, release_commit]
+    needs: [sign_mobile, dump_config, release_commit]
     if: ${{ !failure() && !cancelled() }} # Run if previous step is skipped
     runs-on: ubuntu-latest
     strategy:
@@ -682,12 +667,12 @@ jobs:
           cat $GITHUB_OUTPUT
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: ${{ steps.shanotes.outputs.app_sha }}
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: signed-${{ matrix.appName }}-${{ matrix.packageFormat }}-${{ matrix.packageFlavor }}
           path: "uploads/"
@@ -748,27 +733,12 @@ jobs:
           ls -l uploads/${PKG_FILE_PRETTY}
 
       - name: App Token Generate
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
         if: ${{ contains(matrix.releaseTarget, 'github') && vars.RELEASER_APP_CLIENT_ID }}
         id: app-token
         with:
           app-id: ${{ vars.RELEASER_APP_CLIENT_ID }}
           private-key: ${{ secrets.RELEASER_APP_PRIVATE_KEY }}
-
-      - name: Publish to GitHub Releases
-        id: publish_gh
-        if: ${{ contains(matrix.releaseTarget, 'github') }}
-        uses: softprops/action-gh-release@01570a1f39cb168c169c802c3bceb9e93fb10974  # v2.1.0
-        with:
-          token: ${{ steps.app-token.outputs.token || github.token }}
-          target_commitish: ${{ steps.shanotes.outputs.app_sha }}
-          tag_name: ${{ steps.pkginfo.outputs.TAG_NAME }}
-          name: ${{ steps.pkginfo.outputs.FULL_VERSION_NAME }}
-          body: ${{ steps.shanotes.outputs.app_github_notes }}
-          prerelease: ${{ env.RELEASE_TYPE != 'release' }}
-          fail_on_unmatched_files: true
-          files: |
-            uploads/${{ steps.rename.outputs.PKG_FILE }}
 
       - name: Adjust release notes for play store upload
         if: ${{ !inputs.skipGooglePlay && contains(matrix.releaseTarget, 'play') && matrix.playTargetTrack }}
@@ -804,7 +774,7 @@ jobs:
 
       - name: Publish to Google Play
         id: publish_play
-        uses: r0adkll/upload-google-play@v1
+        uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb # v1.1.3
         if: ${{ !inputs.skipGooglePlay && contains(matrix.releaseTarget, 'play') && matrix.playTargetTrack }}
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_ACCOUNT }}
@@ -817,15 +787,29 @@ jobs:
           releaseFiles: |
             uploads/${{ steps.rename.outputs.PKG_FILE }}
 
-      - name: Determine FTP Destination
-        id: ftp_destination
+      - name: Generate source tar
+        id: generate_tar
+        if: ${{ !inputs.skipFtp && contains(matrix.releaseTarget, 'ftp') && matrix.packageFormat == 'apk' }}
+        shell: bash
+        env:
+          APP_SHA: ${{ steps.shanotes.outputs.app_sha }}
+          TAG_NAME: ${{ steps.pkginfo.outputs.TAG_NAME }}
+        run: |
+          FTP_TAR_FILENAME=$(echo "${TAG_NAME,,}.tar.gz" | sed 's/_/-/g')
+          git archive --format=tar.gz --output=uploads/${FTP_TAR_FILENAME} ${APP_SHA}
+          ls -l uploads
+          echo "FTP_TAR_FILENAME=${FTP_TAR_FILENAME}" | tee -a $GITHUB_OUTPUT
+
+      - name: Prepare for FTP Uploads
+        id: prepare_ftp
         if: ${{ !inputs.skipFtp && contains(matrix.releaseTarget, 'ftp') && matrix.packageFormat == 'apk' }}
         shell: bash
         env:
           RELEASE_TYPE: ${{ env.RELEASE_TYPE }}
-          TAG_NAME: ${{ steps.pkginfo.outputs.TAG_NAME }}
           VERSION_NAME: ${{ steps.pkginfo.outputs.VERSION_NAME }}
           UPLOAD_FTP_STAGE: ${{ inputs.uploadFtpStage }}
+          PKG_FILE: ${{ steps.rename.outputs.PKG_FILE }}
+          FTP_TAR_FILENAME: ${{ steps.generate_tar.outputs.FTP_TAR_FILENAME }}
         run: |
           GCP_ENV=prod
           GCP_PROJECT=moz-fx-productdelivery-pr-38b5
@@ -839,10 +823,11 @@ jobs:
           WORKLOAD_IDENTITY_PROVIDER="projects/324168772199/locations/global/workloadIdentityPools/github-actions/providers/github-actions"
 
           FTP_SUBDIR="releases"
-          FTP_DESTINATION="${GCP_PROJECT}-productdelivery/pub/thunderbird-mobile/android/${FTP_SUBDIR}/${VERSION_NAME}/"
+          FTP_LOCAL_PATH="ftp/${FTP_SUBDIR}/${VERSION_NAME}"
+          FTP_DESTINATION="${GCP_PROJECT}-productdelivery/pub/thunderbird-mobile/android/${FTP_SUBDIR}/${VERSION_NAME}"
           FTP_URL_PATH="${FTP_URL_PREFIX}/${FTP_SUBDIR}/${VERSION_NAME}/"
-          FTP_TAR_FILENAME=$(echo "${TAG_NAME,,}.tar.gz" | sed 's/_/-/g')
-          if [[ "${RELEASE_TYPE}" = "daily" ]]; then
+          echo "RELEASE_TYPE=${RELEASE_TYPE}"
+          if [[ "$RELEASE_TYPE" = "daily" ]]; then
             YEAR=$(date -d "${RELEASE_DATE}" +"%Y")
             MONTH=$(date -d "${RELEASE_DATE}" +%m)
             DAY=$(date -d "${RELEASE_DATE}" +"%d")
@@ -851,67 +836,80 @@ jobs:
             SEC=$(date -d "${RELEASE_DATE}" +"%S")
             DATETIME_SUBDIR="${YEAR}/${MONTH}/${YEAR}-${MONTH}-${DAY}-${HOUR}-${MIN}-${SEC}-main"
             FTP_SUBDIR="nightly"
-            FTP_DESTINATION="${GCP_PROJECT}-productdelivery/pub/thunderbird-mobile/android/${FTP_SUBDIR}/${DATETIME_SUBDIR}/"
+            FTP_LOCAL_PATH="ftp/${FTP_SUBDIR}/${DATETIME_SUBDIR}"
+            FTP_LOCAL_PATH_NIGHTLY_LATEST="ftp/${FTP_SUBDIR}/latest-main"
+            FTP_DESTINATION="${GCP_PROJECT}-productdelivery/pub/thunderbird-mobile/android/${FTP_SUBDIR}/${DATETIME_SUBDIR}"
+            FTP_DESTINATION_NIGHTLY_LATEST="${GCP_PROJECT}-productdelivery/pub/thunderbird-mobile/android/${FTP_SUBDIR}/latest-main"
             FTP_URL_PATH="${FTP_URL_PREFIX}/${FTP_SUBDIR}/${DATETIME_SUBDIR}/"
-            FTP_DESTINATION_NIGHTLY_LATEST="${GCP_PROJECT}-productdelivery/pub/thunderbird-mobile/android/${FTP_SUBDIR}/latest-main/"
             FTP_URL_PATH_NIGHTLY_LATEST="${FTP_URL_PREFIX}/${FTP_SUBDIR}/latest-main/"
           fi
+
+          mkdir -p "${FTP_LOCAL_PATH}"
+          cp "uploads/${PKG_FILE}" "${FTP_LOCAL_PATH}"
+          cp "uploads/${FTP_TAR_FILENAME}" "${FTP_LOCAL_PATH}"
+          ls "${FTP_LOCAL_PATH}"
+          if [[ "$RELEASE_TYPE" = "daily" ]]; then
+            mkdir -p "${FTP_LOCAL_PATH_NIGHTLY_LATEST}"
+            cp "uploads/${PKG_FILE}" "${FTP_LOCAL_PATH_NIGHTLY_LATEST}"
+            cp "uploads/${FTP_TAR_FILENAME}" "${FTP_LOCAL_PATH_NIGHTLY_LATEST}"
+            ls "${FTP_LOCAL_PATH_NIGHTLY_LATEST}"
+          fi
+
+          echo "path: ${FTP_LOCAL_PATH}/${PKG_FILE}"
+          echo "destination: ${FTP_DESTINATION}/${PKG_FILE}"
+          echo "path: ${FTP_LOCAL_PATH_NIGHTLY_LATEST}/${PKG_FILE}"
+          echo "destination: ${FTP_DESTINATION_NIGHTLY_LATEST}/${PKG_FILE}"
+          echo "path: ${FTP_LOCAL_PATH}/${FTP_TAR_FILENAME}"
+          echo "destination: ${FTP_DESTINATION}/${FTP_TAR_FILENAME}"
+          echo "path: ${FTP_LOCAL_PATH_NIGHTLY_LATEST}/${FTP_TAR_FILENAME}"
+          echo "destination: ${FTP_DESTINATION_NIGHTLY_LATEST}/${FTP_TAR_FILENAME}"
+
           echo "SERVICE_ACCOUNT=${SERVICE_ACCOUNT}" | tee -a $GITHUB_OUTPUT
           echo "WORKLOAD_IDENTITY_PROVIDER=${WORKLOAD_IDENTITY_PROVIDER}" | tee -a $GITHUB_OUTPUT
+          echo "FTP_LOCAL_PATH=${FTP_LOCAL_PATH}" | tee -a $GITHUB_OUTPUT
+          echo "FTP_LOCAL_PATH_NIGHTLY_LATEST=${FTP_LOCAL_PATH_NIGHTLY_LATEST}" | tee -a $GITHUB_OUTPUT
           echo "FTP_DESTINATION=${FTP_DESTINATION}" | tee -a $GITHUB_OUTPUT
           echo "FTP_DESTINATION_NIGHTLY_LATEST=${FTP_DESTINATION_NIGHTLY_LATEST}" | tee -a $GITHUB_OUTPUT
           echo "FTP_URL_PATH=${FTP_URL_PATH}" | tee -a $GITHUB_OUTPUT
           echo "FTP_URL_PATH_NIGHTLY_LATEST=${FTP_URL_PATH_NIGHTLY_LATEST}" | tee -a $GITHUB_OUTPUT
-          echo "FTP_TAR_FILENAME=${FTP_TAR_FILENAME}" | tee -a $GITHUB_OUTPUT
-
-      - name: Generate source tar
-        if: ${{ !inputs.skipFtp && contains(matrix.releaseTarget, 'ftp') && matrix.packageFormat == 'apk' }}
-        shell: bash
-        env:
-          APP_SHA: ${{ steps.shanotes.outputs.app_sha }}
-          FTP_TAR_FILENAME: ${{ steps.ftp_destination.outputs.FTP_TAR_FILENAME }}
-        run: |
-          git archive --format=tar.gz --output=uploads/${FTP_TAR_FILENAME} ${APP_SHA}
-          ls -l uploads
 
       - name: Auth to GCS for FTP
         if: ${{ !inputs.skipFtp && contains(matrix.releaseTarget, 'ftp') && matrix.packageFormat == 'apk' }}
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2.1.7
         with:
-          token_format: 'access_token'
-          service_account: ${{ steps.ftp_destination.outputs.SERVICE_ACCOUNT }}
-          workload_identity_provider: ${{ steps.ftp_destination.outputs.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ steps.prepare_ftp.outputs.SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ steps.prepare_ftp.outputs.WORKLOAD_IDENTITY_PROVIDER }}
 
       - name: GCS Upload of APK Package to FTP
         if: ${{ !inputs.skipFtp && contains(matrix.releaseTarget, 'ftp') && matrix.packageFormat == 'apk' }}
-        uses: google-github-actions/upload-cloud-storage@v2
+        uses: google-github-actions/upload-cloud-storage@386ab77f37fdf51c0e38b3d229fad286861cc0d0 # v2.2.1
         with:
-          path: uploads/${{ steps.rename.outputs.PKG_FILE }}
-          destination: ${{ steps.ftp_destination.outputs.FTP_DESTINATION }}
+          path: ${{ steps.prepare_ftp.outputs.FTP_LOCAL_PATH }}/${{ steps.rename.outputs.PKG_FILE }}
+          destination: ${{ steps.prepare_ftp.outputs.FTP_DESTINATION }}/${{ steps.rename.outputs.PKG_FILE }}
 
       - name: GCS Upload of APK Package to FTP Nightly Latest
         if: ${{ !inputs.skipFtp && contains(matrix.releaseTarget, 'ftp') && matrix.packageFormat == 'apk' && needs.dump_config.outputs.releaseType == 'daily'}}
-        uses: google-github-actions/upload-cloud-storage@v2
+        uses: google-github-actions/upload-cloud-storage@386ab77f37fdf51c0e38b3d229fad286861cc0d0 # v2.2.1
         with:
-          path: uploads/${{ steps.rename.outputs.PKG_FILE }}
-          destination: ${{ steps.ftp_destination.outputs.FTP_DESTINATION_NIGHTLY_LATEST }}
+          path: ${{ steps.prepare_ftp.outputs.FTP_LOCAL_PATH_NIGHTLY_LATEST }}/${{ steps.rename.outputs.PKG_FILE }}
+          destination: ${{ steps.prepare_ftp.outputs.FTP_DESTINATION_NIGHTLY_LATEST }}/${{ steps.rename.outputs.PKG_FILE }}
 
       - name: GCS Upload of Source Tar to FTP
         if: ${{ !inputs.skipFtp && contains(matrix.releaseTarget, 'ftp') && matrix.packageFormat == 'apk' }}
-        uses: google-github-actions/upload-cloud-storage@v2
+        uses: google-github-actions/upload-cloud-storage@386ab77f37fdf51c0e38b3d229fad286861cc0d0 # v2.2.1
         with:
-          path: uploads/${{ steps.ftp_destination.outputs.FTP_TAR_FILENAME }}
-          destination: ${{ steps.ftp_destination.outputs.FTP_DESTINATION }}
+          path: ${{ steps.prepare_ftp.outputs.FTP_LOCAL_PATH }}/${{ steps.generate_tar.outputs.FTP_TAR_FILENAME }}
+          destination: ${{ steps.prepare_ftp.outputs.FTP_DESTINATION }}/${{ steps.generate_tar.outputs.FTP_TAR_FILENAME }}
 
       - name: GCS Upload of Source Tar to FTP Nightly Latest
         if: ${{ !inputs.skipFtp && contains(matrix.releaseTarget, 'ftp') && matrix.packageFormat == 'apk' && needs.dump_config.outputs.releaseType == 'daily'}}
-        uses: google-github-actions/upload-cloud-storage@v2
+        uses: google-github-actions/upload-cloud-storage@386ab77f37fdf51c0e38b3d229fad286861cc0d0 # v2.2.1
         with:
-          path: uploads/${{ steps.ftp_destination.outputs.FTP_TAR_FILENAME }}
-          destination: ${{ steps.ftp_destination.outputs.FTP_DESTINATION_NIGHTLY_LATEST }}
+          path: ${{ steps.prepare_ftp.outputs.FTP_LOCAL_PATH_NIGHTLY_LATEST }}/${{ steps.generate_tar.outputs.FTP_TAR_FILENAME }}
+          destination: ${{ steps.prepare_ftp.outputs.FTP_DESTINATION_NIGHTLY_LATEST }}/${{ steps.generate_tar.outputs.FTP_TAR_FILENAME }}
 
       - name: Summary
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         id: summary
         env:
           tagName: ${{ steps.pkginfo.outputs.TAG_NAME }}
@@ -923,8 +921,8 @@ jobs:
           appSha: ${{ steps.shanotes.outputs.app_sha }}
           appName: ${{ matrix.appName }}
           skipGooglePlay: ${{ inputs.skipGooglePlay }}
-          ftpUrlPath: ${{ steps.ftp_destination.outputs.FTP_URL_PATH }}
-          ftpUrlPathNightlyLatest: ${{ steps.ftp_destination.outputs.FTP_URL_PATH_NIGHTLY_LATEST }}
+          ftpUrlPath: ${{ steps.prepare_ftp.outputs.FTP_URL_PATH }}
+          ftpUrlPathNightlyLatest: ${{ steps.prepare_ftp.outputs.FTP_URL_PATH_NIGHTLY_LATEST }}
           skipFtp: ${{ inputs.skipFtp }}
           packageFormat: ${{ matrix.packageFormat }}
         with:
@@ -959,7 +957,7 @@ jobs:
 
             if (process.env.skipFtp != "true" && process.env.releaseTarget.includes("ftp") && process.env.packageFormat == 'apk') {
               await core.summary
-                .addRaw(`Published to FTP at`)
+                .addRaw(`Published to FTP at `)
                 .addLink(process.env.ftpUrlPath, process.env.ftpUrlPath)
                 .addEOL();
 
@@ -985,7 +983,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Info
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         id: info
         env:
           needs: ${{ toJSON(needs) }}
@@ -1002,7 +1000,7 @@ jobs:
 
       - name: Notify Failure
         if: ${{ vars.MATRIX_NOTIFY_ROOM && contains(needs.*.result, 'failure') }}
-        uses: kewisch/action-matrix-notify@v1
+        uses: kewisch/action-matrix-notify@3c45d89acd032c84b955b54c8a9001833ac91d17 # v1
         with:
           matrixHomeserver: ${{ vars.MATRIX_NOTIFY_HOMESERVER }}
           matrixRoomId: ${{ vars.MATRIX_NOTIFY_ROOM }}
@@ -1013,7 +1011,7 @@ jobs:
 
       - name: Notify Cancelled
         if: ${{ vars.MATRIX_NOTIFY_ROOM && !contains(needs.*.result, 'failure') && contains(needs.*.result, 'cancelled')  }}
-        uses: kewisch/action-matrix-notify@v1
+        uses: kewisch/action-matrix-notify@3c45d89acd032c84b955b54c8a9001833ac91d17 # v1
         with:
           matrixHomeserver: ${{ vars.MATRIX_NOTIFY_HOMESERVER }}
           matrixRoomId: ${{ vars.MATRIX_NOTIFY_ROOM }}
@@ -1024,7 +1022,7 @@ jobs:
 
       - name: Notify Success (Beta/Release)
         if: "${{ vars.MATRIX_NOTIFY_ROOM && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && contains(fromJSON('[\"beta\", \"release\"]'), needs.dump_config.outputs.releaseType) }}"
-        uses: kewisch/action-matrix-notify@v1
+        uses: kewisch/action-matrix-notify@3c45d89acd032c84b955b54c8a9001833ac91d17 # v1
         with:
           matrixHomeserver: ${{ vars.MATRIX_NOTIFY_HOMESERVER }}
           matrixRoomId: ${{ vars.MATRIX_NOTIFY_ROOM }}
@@ -1035,7 +1033,7 @@ jobs:
 
       - name: Thunderbird Publish URL (Beta/Release)
         if: ${{ vars.MATRIX_NOTIFY_ROOM && needs.publish_release.outputs.thunderbird_release_url && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
-        uses: kewisch/action-matrix-notify@v1
+        uses: kewisch/action-matrix-notify@3c45d89acd032c84b955b54c8a9001833ac91d17 # v1
         with:
           matrixHomeserver: ${{ vars.MATRIX_NOTIFY_HOMESERVER }}
           matrixRoomId: ${{ vars.MATRIX_NOTIFY_ROOM }}
@@ -1045,7 +1043,7 @@ jobs:
 
       - name: K-9 Mail Publish URL (Beta/Release)
         if: ${{ vars.MATRIX_NOTIFY_ROOM && needs.publish_release.outputs.k9mail_release_url && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
-        uses: kewisch/action-matrix-notify@v1
+        uses: kewisch/action-matrix-notify@3c45d89acd032c84b955b54c8a9001833ac91d17 # v1
         with:
           matrixHomeserver: ${{ vars.MATRIX_NOTIFY_HOMESERVER }}
           matrixRoomId: ${{ vars.MATRIX_NOTIFY_ROOM }}
@@ -1055,7 +1053,7 @@ jobs:
 
       - name: Notify Success (Daily)
         if: ${{ vars.MATRIX_NOTIFY_ROOM && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && needs.dump_config.outputs.releaseType == 'daily' && steps.last_status.outputs.last_status == 'failure' }}
-        uses: kewisch/action-matrix-notify@v1
+        uses: kewisch/action-matrix-notify@3c45d89acd032c84b955b54c8a9001833ac91d17 # v1
         with:
           matrixHomeserver: ${{ vars.MATRIX_NOTIFY_HOMESERVER }}
           matrixRoomId: ${{ vars.MATRIX_NOTIFY_ROOM }}
