@@ -20,11 +20,19 @@ jobs:
           app-id: ${{ vars.BOT_CLIENT_ID }}
           private-key: ${{ secrets.BOT_PRIVATE_KEY }}
 
-      - name: Assign reviewer to PR
-        if: ${{ github.event.requested_reviewer }}
+      - name: Assign reviewer to PR (main only)
+        if: github.base_ref == 'main' && github.event.requested_reviewer
         env:
           PR_REVIEWER: ${{ github.event.requested_reviewer.login }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
         run: |
-          gh pr edit $PR_NUMBER --repo $GITHUB_REPOSITORY --add-assignee "$PR_REVIEWER"
+          gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --add-assignee "$PR_REVIEWER"
+
+      - name: Assign build-release team as reviewer (beta or release)
+        if: github.base_ref == 'beta' || github.base_ref == 'release'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --add-team-reviewer thunderbird/teams/build-release
